@@ -95,9 +95,9 @@ export default function DashboardClient() {
             await saveDietPlanSupabase(client.id, plan);
             refreshClients();
             setIsDietModalOpen(true);
-        } catch (error) {
-            alert("Error al generar la dieta. Inténtalo de nuevo.");
+        } catch (error: any) {
             console.error(error);
+            alert(error.message || "Error al generar la dieta. Inténtalo de nuevo.");
         } finally {
             setIsLoading(false);
         }
