@@ -88,7 +88,13 @@ export default function DashboardClient() {
             // but we need to pass mealsPerDay to it. 
             // V1 action might need update or prompt tweaking.
             // For now, let's keep it simple, expecting the prompt to handle it if we modify it later.
-            const plan = await generateDietPlan(client);
+            const result = await generateDietPlan(client);
+
+            if (!result.success) {
+                throw new Error(result.error);
+            }
+
+            const plan = result.data;
             setGeneratedPlan(plan);
 
             // Save plan to Supabase

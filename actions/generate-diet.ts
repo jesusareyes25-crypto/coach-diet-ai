@@ -7,7 +7,12 @@ import { Client, DietPlan } from '@/types';
 // Allow longer timeout for AI generation (Vercel default is 10s)
 // export const maxDuration = 60; // Commented out to fix build error
 
-export async function generateDietPlan(client: Client): Promise<DietPlan> {
+// Define return type
+type GenerateDietResult =
+  | { success: true; data: DietPlan }
+  | { success: false; error: string };
+
+export async function generateDietPlan(client: Client): Promise<GenerateDietResult> {
   const prompt = `
     Actúa como un nutricionista experto y entrenador personal.
     Crea un plan de dieta de 1 día detallado para el siguiente cliente:
@@ -41,7 +46,7 @@ export async function generateDietPlan(client: Client): Promise<DietPlan> {
   try {
     // Explicitly check for API Key before calling
     if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
-      throw new Error("API Key de Google no encontrada en el servidor.");
+      return { success: false, error: "API Key de Google no encontrada en el servidor." };
     }
 
     const { text } = await generateText({
@@ -52,18 +57,20 @@ export async function generateDietPlan(client: Client): Promise<DietPlan> {
     const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
     const data = JSON.parse(cleanText);
 
-    return {
+    const plan = {
       id: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
       ...data
     } as DietPlan;
 
+    return { success: true, data: plan };
+
   } catch (error: any) {
     console.error("AI Generation Error:", error);
     // Return specific error if API key is missing or quota exceeded
     if (error.message?.includes('API key')) {
-      throw new Error("Error de configuración: API Key inválida o faltante.");
+      return { success: false, error: "Error de configuración: API Key inválida o faltante." };
     }
-    throw new Error(`Error generando dieta: ${error.message || 'Desconocido'}`);
+    return { success: false, error: `Error generando dieta: ${error.message || 'Desconocido'}` };
   }
 }
