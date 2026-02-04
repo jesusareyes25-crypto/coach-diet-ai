@@ -5,7 +5,7 @@ import { generateText } from 'ai';
 import { Client, DietPlan } from '@/types';
 
 // Allow longer timeout for AI generation (Vercel default is 10s)
-export const maxDuration = 60;
+// export const maxDuration = 60; // Commented out to fix build error
 
 export async function generateDietPlan(client: Client): Promise<DietPlan> {
   const prompt = `
