@@ -43,6 +43,24 @@ export async function generateDietPlan(client: Client): Promise<GenerateDietResu
     }
   `;
 
+  // MOCK MODE: Uncomment to test flow without AI
+  // if (true) {
+  //     console.log("MOCK MODE ENABLED");
+  //     const mockPlan: DietPlan = {
+  //         id: crypto.randomUUID(),
+  //         createdAt: new Date().toISOString(),
+  //         title: "Dieta Ejemplo (Mock)",
+  //         dailyCalories: 2000,
+  //         meals: {
+  //             breakfast: { name: "Avena con frutas", description: "Bowl de avena", calories: 350, protein: 12, fat: 6, carbs: 60 },
+  //             lunch: { name: "Pollo a la plancha", description: "Con arroz y verduras", calories: 600, protein: 45, fat: 12, carbs: 50 },
+  //             dinner: { name: "Ensalada de Atún", description: "Ligera y proteica", calories: 300, protein: 25, fat: 10, carbs: 15 },
+  //             snacks: []
+  //         }
+  //     };
+  //     return { success: true, data: mockPlan };
+  // }
+
   try {
     // Explicitly check for API Key before calling
     if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
