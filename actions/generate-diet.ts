@@ -50,8 +50,12 @@ export async function generateDietPlan(client: Client): Promise<DietPlan> {
       ...data
     } as DietPlan;
 
-  } catch (error) {
-    console.error("Error generating diet:", error);
-    throw new Error("No se pudo generar la dieta. Inténtalo de nuevo.");
+  } catch (error: any) {
+    console.error("AI Generation Error:", error);
+    // Return specific error if API key is missing or quota exceeded
+    if (error.message?.includes('API key')) {
+      throw new Error("Error de configuración: API Key inválida o faltante.");
+    }
+    throw new Error(`Error generando dieta: ${error.message || 'Desconocido'}`);
   }
 }
