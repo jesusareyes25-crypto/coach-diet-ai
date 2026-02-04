@@ -4,6 +4,9 @@ import { google } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import { Client, DietPlan } from '@/types';
 
+// Allow longer timeout for AI generation (Vercel default is 10s)
+export const maxDuration = 60;
+
 export async function generateDietPlan(client: Client): Promise<DietPlan> {
   const prompt = `
     Actúa como un nutricionista experto y entrenador personal.
@@ -36,6 +39,11 @@ export async function generateDietPlan(client: Client): Promise<DietPlan> {
   `;
 
   try {
+    // Explicitly check for API Key before calling
+    if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+      throw new Error("API Key de Google no encontrada en el servidor.");
+    }
+
     const { text } = await generateText({
       model: google('gemini-1.5-flash'),
       prompt: prompt,
