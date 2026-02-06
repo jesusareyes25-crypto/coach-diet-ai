@@ -84,13 +84,12 @@ export default function DashboardClient() {
         setSelectedClient(client);
         setIsLoading(true);
         try {
-            // Logic for various meals is handled in prompt inside generate-diet, 
-            // but we need to pass mealsPerDay to it. 
-            // V1 action might need update or prompt tweaking.
-            // For now, let's keep it simple, expecting the prompt to handle it if we modify it later.
+            console.log("Calling generateDietPlan for client:", client.id);
             const result = await generateDietPlan(client);
+            console.log("generateDietPlan result:", result);
 
             if (!result.success) {
+                console.error("Server Action returned failure:", result.error);
                 throw new Error(result.error);
             }
 
@@ -102,7 +101,7 @@ export default function DashboardClient() {
             refreshClients();
             setIsDietModalOpen(true);
         } catch (error: any) {
-            console.error(error);
+            console.error("Error in handleGenerateDiet:", error);
             alert(error.message || "Error al generar la dieta. Inténtalo de nuevo.");
         } finally {
             setIsLoading(false);
