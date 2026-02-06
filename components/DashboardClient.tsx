@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Client, DietPlan } from "@/types";
 import { getClientsSupabase, saveClientSupabase, deleteClientSupabase, saveDietPlanSupabase } from "@/lib/data-service";
 import { Plus, User, Trash2, Zap, Loader2, Download } from "lucide-react";
-import { generateDietPlan } from "@/actions/generate-diet";
+// import { generateDietPlan } from "@/actions/generate-diet"; // Removed in favor of API Route
 import FoodScanner from "./FoodScanner";
 import dynamic from "next/dynamic";
 
@@ -84,13 +84,23 @@ export default function DashboardClient() {
         setSelectedClient(client);
         setIsLoading(true);
         try {
-            console.log("Calling generateDietPlan for client:", client.id);
-            const result = await generateDietPlan(client);
-            console.log("generateDietPlan result:", result);
+            console.log("Calling API Route for client:", client.id);
 
-            if (!result.success) {
-                console.error("Server Action returned failure:", result.error);
-                throw new Error(result.error);
+            const response = await fetch('/api/generate-diet', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(client),
+            });
+
+            const result = await response.json();
+            console.log("API result:", result);
+
+            if (!response.ok || !result.success) {
+                const errorMsg = result.error || "Error en la conexión con el servidor";
+                console.error("API returned failure:", errorMsg);
+                throw new Error(errorMsg);
             }
 
             const plan = result.data;
