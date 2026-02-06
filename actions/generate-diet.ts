@@ -11,13 +11,26 @@ type GenerateDietResult =
   | { success: false; error: string };
 
 export async function generateDietPlan(client: Client): Promise<GenerateDietResult> {
-  console.log("Server Action Started for:", client.name);
+  console.log("Server Action Received Call");
 
-  // RETURN MOCK DATA DIRECTLY - NO AI CALLS
-  // This proves if the "Server Action" mechanism itself is working.
+  if (!client) {
+    console.error("Received null client");
+    return { success: false, error: "Client data is missing" };
+  }
+
+  // Debugging serialization
+  try {
+    console.log("Client Name:", client.name);
+  } catch (e) {
+    console.error("Error accessing client data:", e);
+    return { success: false, error: "Invalid client data" };
+  }
+
+  // Simple ID generator to avoid crypto dependency issues
+  const simpleId = Math.random().toString(36).substring(7);
 
   const mockPlan: DietPlan = {
-    id: crypto.randomUUID(),
+    id: simpleId,
     createdAt: new Date().toISOString(),
     title: "Plan de Prueba (Sin IA)",
     dailyCalories: 2000,
@@ -30,7 +43,7 @@ export async function generateDietPlan(client: Client): Promise<GenerateDietResu
     groceryList: ["Elemento 1", "Elemento 2"]
   };
 
-  // Simulate a small delay like a real request
+  // Simulate a small delay
   await new Promise(resolve => setTimeout(resolve, 500));
 
   console.log("Returning success response");
