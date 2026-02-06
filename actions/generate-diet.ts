@@ -1,51 +1,100 @@
 'use server';
 
+import { google } from '@ai-sdk/google';
+import { generateText } from 'ai';
 import { Client, DietPlan } from '@/types';
 
-// TEMPORARILY REMOVED AI IMPORTS to isolate the crash
-// import { google } from '@ai-sdk/google';
-// import { generateText } from 'ai';
+// user-provided pattern: return { message, statusCode, data? }
+type ActionResponse = {
+  message: string;
+  statusCode: number;
+  data?: DietPlan;
+};
 
-type GenerateDietResult =
-  | { success: true; data: DietPlan }
-  | { success: false; error: string };
+// Generic Server Error Handler (Adapted from User's Snippet)
+async function handleServerError(error: any): Promise<ActionResponse> {
+  console.error("Server Action Error:", error);
 
-export async function generateDietPlan(client: Client): Promise<GenerateDietResult> {
-  console.log("Server Action Received Call");
-
-  if (!client) {
-    console.error("Received null client");
-    return { success: false, error: "Client data is missing" };
-  }
-
-  // Debugging serialization
   try {
-    console.log("Client Name:", client.name);
-  } catch (e) {
-    console.error("Error accessing client data:", e);
-    return { success: false, error: "Invalid client data" };
+    // Check for specific known errors
+    if (error.message?.includes('API key')) {
+      return { message: "Configuration Error: Google API Key missing or invalid.", statusCode: 401 };
+    }
+
+    // Default fallback
+    return { message: error.message || "Unknown server error", statusCode: 500 };
+
+  } catch (catchError: any) {
+    return { message: catchError.message, statusCode: 500 };
   }
+}
 
-  // Simple ID generator to avoid crypto dependency issues
-  const simpleId = Math.random().toString(36).substring(7);
+export async function generateDietPlan(client: Client): Promise<ActionResponse> {
+  try {
+    console.log("Starting Diet Generation for:", client.name);
 
-  const mockPlan: DietPlan = {
-    id: simpleId,
-    createdAt: new Date().toISOString(),
-    title: "Plan de Prueba (Sin IA)",
-    dailyCalories: 2000,
-    meals: {
-      breakfast: { name: "Prueba Desayuno", description: "Verificando conexión", calories: 400, protein: 20, fat: 10, carbs: 50 },
-      lunch: { name: "Prueba Almuerzo", description: "Verificando conexión", calories: 600, protein: 40, fat: 15, carbs: 60 },
-      dinner: { name: "Prueba Cena", description: "Verificando conexión", calories: 400, protein: 30, fat: 10, carbs: 20 },
-      snacks: []
-    },
-    groceryList: ["Elemento 1", "Elemento 2"]
-  };
+    if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+      console.warn("API Key missing. Triggering Mock Fallback internally (or throwing error handling).");
+      // For this pattern, we can treat missing key as an error handled by handleServerError logic 
+      // OR we can do the Mock logic here if we still want fail-safe.
+      // User asked to 'solve the error', so let's be strict but safe.
+      // Let's THROW so handleServerError catches it and formats it.
+      throw new Error("Missing GOOGLE_GENERATIVE_AI_API_KEY");
+    }
 
-  // Simulate a small delay
-  await new Promise(resolve => setTimeout(resolve, 500));
+    const prompt = `
+      Actúa como un nutricionista experto y entrenador personal.
+      Crea un plan de dieta de 1 día detallado para el siguiente cliente:
+      
+      Perfil:
+      - Nombre: ${client.name}
+      - Edad: ${client.age}
+      - Peso: ${client.weight}kg
+      - Altura: ${client.height}cm
+      - Género: ${client.gender}
+      - Objetivo: ${client.goal}
+      - Nivel de Actividad: ${client.activityLevel}
+      - Restricciones: ${client.dietaryRestrictions}
+      - Comidas al día: ${client.mealsPerDay || 3}
 
-  console.log("Returning success response");
-  return { success: true, data: mockPlan };
+      Genera una respuesta EXCLUSIVAMENTE en formato JSON válido.
+      IMPORTANTE: Si el cliente pide más de 3 comidas, añade los "snacks" necesarios en el array "snacks".
+      Estructura JSON:
+      {
+        "title": "Nombre creativo para el plan",
+        "dailyCalories": número estimado de calorías,
+        "meals": {
+          "breakfast": { "name": "Nombre del plato", "description": "Descripción breve", "calories": 0, "protein": 0, "fat": 0, "carbs": 0 },
+          "lunch": { ... },
+          "dinner": { ... },
+          "snacks": [ { "name": "Snack 1", ... }, ... ]
+        },
+        "groceryList": ["Ingrediente 1", "Ingrediente 2"]
+      }
+    `;
+
+    const { text } = await generateText({
+      model: google('gemini-1.5-flash'),
+      prompt: prompt,
+    });
+
+    const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    const data = JSON.parse(cleanText);
+
+    // Create Plain Object (POJO) to ensure serialization
+    const plan: DietPlan = {
+      id: crypto.randomUUID(), // Assuming this works, if not we catch it.
+      createdAt: new Date().toISOString(),
+      title: data.title || "Plan Generado",
+      dailyCalories: data.dailyCalories || 2000,
+      meals: data.meals,
+      groceryList: data.groceryList || []
+    };
+
+    return { message: "Success", statusCode: 200, data: plan };
+
+  } catch (error: any) {
+    // Use the User's Error Handler Pattern
+    return await handleServerError(error);
+  }
 }

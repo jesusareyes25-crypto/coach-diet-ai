@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Client, DietPlan } from "@/types";
 import { getClientsSupabase, saveClientSupabase, deleteClientSupabase, saveDietPlanSupabase } from "@/lib/data-service";
 import { Plus, User, Trash2, Zap, Loader2, Download } from "lucide-react";
-// import { generateDietPlan } from "@/actions/generate-diet"; // Removed in favor of API Route
+import { generateDietPlan } from "@/actions/generate-diet";
 import FoodScanner from "./FoodScanner";
 import dynamic from "next/dynamic";
 
