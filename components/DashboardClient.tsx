@@ -269,6 +269,23 @@ export default function DashboardClient() {
                                 </div>
                             ))}
                         </div>
+
+                        {/* Grocery List Section */}
+                        {generatedPlan.groceryList && generatedPlan.groceryList.length > 0 && (
+                            <div className="mt-8 bg-dark-bg p-6 border border-dark-border">
+                                <h3 className="text-neon font-oswald text-xl mb-4 flex items-center gap-2 uppercase">
+                                    <span className="text-2xl">🛒</span> Lista de Compras
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    {generatedPlan.groceryList.map((item, idx) => (
+                                        <div key={idx} className="flex items-center gap-2 text-gray-400 text-sm">
+                                            <div className="w-1.5 h-1.5 bg-neon rounded-full" />
+                                            {item}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

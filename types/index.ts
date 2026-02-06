@@ -18,6 +18,7 @@ export interface DietPlan {
         dinner: Meal;
         snacks: Meal[];
     };
+    groceryList: string[]; // Added for Competition Requirements
 }
 
 export interface Client {
