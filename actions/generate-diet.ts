@@ -12,9 +12,6 @@ type ActionResponse = {
   data?: DietPlan;
 };
 
-// Set max duration for the Server Action (Vercel specific)
-export const maxDuration = 60;
-
 // Simplified DTO to avoid serialization issues
 type DietRequest = {
   name: string;
@@ -61,7 +58,7 @@ export async function generateDietPlan(request: DietRequest): Promise<ActionResp
     const prompt = `
       Actúa como un nutricionista experto.
       Crea una dieta de 1 día para:
-      ${request.name}, ${request.goal}, ${request.calories || 2000} cal.
+      ${request.name}, ${request.goal}, 2000 cal.
       JSON válido requerido.
       {
         "title": "...", "dailyCalories": 2000, 

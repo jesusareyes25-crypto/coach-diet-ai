@@ -1,0 +1,81 @@
+
+> coach-diet-ai@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 3 errors:
+./actions/generate-diet.ts:16:1
+Ecmascript file had an error
+[0m [90m 14 |[39m
+ [90m 15 |[39m [90m// Set max duration for the Server Action (Vercel specific)[39m
+[31m[1m>[22m[39m[90m 16 |[39m [36mexport[39m [36mconst[39m maxDuration [33m=[39m [35m60[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 17 |[39m
+ [90m 18 |[39m [90m// Simplified DTO to avoid serialization issues[39m
+ [90m 19 |[39m type [33mDietRequest[39m [33m=[39m {[0m
+
+Only async functions are allowed to be exported in a "use server" file.
+
+
+Import traces:
+  Client Component Browser:
+    ./actions/generate-diet.ts [Client Component Browser]
+    ./components/DashboardClient.tsx [Client Component Browser]
+    ./components/DashboardClient.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./actions/generate-diet.ts [Client Component SSR]
+    ./components/DashboardClient.tsx [Client Component SSR]
+    ./components/DashboardClient.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+./components/DashboardClient.tsx:7:1
+Export generateDietPlan doesn't exist in target module
+[0m [90m  5 |[39m [36mimport[39m { getClientsSupabase[33m,[39m saveClientSupabase[33m,[39m deleteClientSupabase[33m,[39m saveDietPlanSupabase } [36mfrom[39m [32m"@/lib/data-service"[39m[33m;[39m
+ [90m  6 |[39m [36mimport[39m { [33mPlus[39m[33m,[39m [33mUser[39m[33m,[39m [33mTrash2[39m[33m,[39m [33mZap[39m[33m,[39m [33mLoader2[39m[33m,[39m [33mDownload[39m } [36mfrom[39m [32m"lucide-react"[39m[33m;[39m
+[31m[1m>[22m[39m[90m  7 |[39m [36mimport[39m { generateDietPlan } [36mfrom[39m [32m"@/actions/generate-diet"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m  8 |[39m [36mimport[39m [33mFoodScanner[39m [36mfrom[39m [32m"./FoodScanner"[39m[33m;[39m
+ [90m  9 |[39m [36mimport[39m dynamic [36mfrom[39m [32m"next/dynamic"[39m[33m;[39m
+ [90m 10 |[39m[0m
+
+The export generateDietPlan was not found in module [project]/actions/generate-diet.ts [app-client] (ecmascript).
+The module has no exports at all.
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/DashboardClient.tsx
+    ./app/page.tsx
+
+
+./components/DashboardClient.tsx:7:1
+Export generateDietPlan doesn't exist in target module
+[0m [90m  5 |[39m [36mimport[39m { getClientsSupabase[33m,[39m saveClientSupabase[33m,[39m deleteClientSupabase[33m,[39m saveDietPlanSupabase } [36mfrom[39m [32m"@/lib/data-service"[39m[33m;[39m
+ [90m  6 |[39m [36mimport[39m { [33mPlus[39m[33m,[39m [33mUser[39m[33m,[39m [33mTrash2[39m[33m,[39m [33mZap[39m[33m,[39m [33mLoader2[39m[33m,[39m [33mDownload[39m } [36mfrom[39m [32m"lucide-react"[39m[33m;[39m
+[31m[1m>[22m[39m[90m  7 |[39m [36mimport[39m { generateDietPlan } [36mfrom[39m [32m"@/actions/generate-diet"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m  8 |[39m [36mimport[39m [33mFoodScanner[39m [36mfrom[39m [32m"./FoodScanner"[39m[33m;[39m
+ [90m  9 |[39m [36mimport[39m dynamic [36mfrom[39m [32m"next/dynamic"[39m[33m;[39m
+ [90m 10 |[39m[0m
+
+The export generateDietPlan was not found in module [project]/actions/generate-diet.ts [app-ssr] (ecmascript).
+The module has no exports at all.
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/DashboardClient.tsx
+    ./app/page.tsx
+
+
+    at <unknown> (./actions/generate-diet.ts:16:1)
+    at <unknown> (./components/DashboardClient.tsx:7:1)
+    at <unknown> (./components/DashboardClient.tsx:7:1)
