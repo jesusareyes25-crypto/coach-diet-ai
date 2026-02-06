@@ -84,25 +84,42 @@ export default function DashboardClient() {
         setSelectedClient(client);
         setIsLoading(true);
         try {
-            console.log("Calling generateDietPlan for client:", client.id);
+            console.log("Calling generateDietPlan (Clean DTO) for:", client.name);
 
-            // Conditional Execution Check: Ensure client exists
             if (!client || !client.id) {
-                throw new Error("Invalid Client ID: Cannot generate diet.");
+                throw new Error("ID de cliente inválido.");
             }
 
-            const response = await generateDietPlan(client);
+            // Create a Clean DTO (Data Transfer Object)
+            // This strips any Supabase specific metadata or non-serializable fields
+            const requestData = {
+                name: client.name,
+                age: client.age,
+                weight: client.weight,
+                height: client.height,
+                gender: client.gender,
+                goal: client.goal,
+                dietaryRestrictions: client.dietaryRestrictions || "Ninguna",
+                activityLevel: client.activityLevel,
+                mealsPerDay: client.mealsPerDay || 3
+            };
+
+            const response = await generateDietPlan(requestData);
             console.log("Server Response:", response);
 
-            // Handle Standardized Error Pattern
             if (response.statusCode !== 200) {
-                // If it's a conflict or specific logical error, we show the message
                 console.error("Server Logic Error:", response.message);
+
+                // Handle specific 401/409 codes if needed
+                if (response.statusCode === 401 || response.message.includes("API Key")) {
+                    throw new Error("Error de configuración del servidor (API Key).");
+                }
+
                 throw new Error(response.message);
             }
 
             if (!response.data) {
-                throw new Error("Server returned success but no data.");
+                throw new Error("El servidor no devolvió datos válidos.");
             }
 
             const plan = response.data;
@@ -114,7 +131,7 @@ export default function DashboardClient() {
             setIsDietModalOpen(true);
         } catch (error: any) {
             console.error("Error in handleGenerateDiet:", error);
-            alert(error.message || "Error al generar la dieta. Inténtalo de nuevo.");
+            alert(error.message || "Error al generar la dieta.");
         } finally {
             setIsLoading(false);
         }
