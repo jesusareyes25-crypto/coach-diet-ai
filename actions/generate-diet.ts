@@ -3,6 +3,7 @@
 import { google } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import { Client, DietPlan } from '@/types';
+import { unstable_noStore as noStore } from 'next/cache';
 
 // user-provided pattern: return { message, statusCode, data? }
 type ActionResponse = {
@@ -30,6 +31,7 @@ async function handleServerError(error: any): Promise<ActionResponse> {
 }
 
 export async function generateDietPlan(client: Client): Promise<ActionResponse> {
+  noStore(); // Opt out of static rendering
   try {
     console.log("Starting Diet Generation for:", client.name);
 

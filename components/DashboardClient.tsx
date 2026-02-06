@@ -84,26 +84,28 @@ export default function DashboardClient() {
         setSelectedClient(client);
         setIsLoading(true);
         try {
-            console.log("Calling API Route for client:", client.id);
+            console.log("Calling generateDietPlan for client:", client.id);
 
-            const response = await fetch('/api/generate-diet', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(client),
-            });
-
-            const result = await response.json();
-            console.log("API result:", result);
-
-            if (!response.ok || !result.success) {
-                const errorMsg = result.error || "Error en la conexión con el servidor";
-                console.error("API returned failure:", errorMsg);
-                throw new Error(errorMsg);
+            // Conditional Execution Check: Ensure client exists
+            if (!client || !client.id) {
+                throw new Error("Invalid Client ID: Cannot generate diet.");
             }
 
-            const plan = result.data;
+            const response = await generateDietPlan(client);
+            console.log("Server Response:", response);
+
+            // Handle Standardized Error Pattern
+            if (response.statusCode !== 200) {
+                // If it's a conflict or specific logical error, we show the message
+                console.error("Server Logic Error:", response.message);
+                throw new Error(response.message);
+            }
+
+            if (!response.data) {
+                throw new Error("Server returned success but no data.");
+            }
+
+            const plan = response.data;
             setGeneratedPlan(plan);
 
             // Save plan to Supabase
